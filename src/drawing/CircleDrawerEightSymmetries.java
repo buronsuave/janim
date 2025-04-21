@@ -2,10 +2,9 @@ package drawing;
 
 import canvas.Canvas;
 import geometry.Circle;
+import java.awt.Color;
 
-import java.awt.*;
-
-public class EightSymmetriesCircleDrawer implements CircleDrawer {
+public class CircleDrawerEightSymmetries implements CircleDrawer {
     @Override
     public void drawCircle(Circle circle, Canvas canvas, Color c) throws ArithmeticException {
         // Polar implementation

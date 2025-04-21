@@ -3,8 +3,7 @@ package drawing;
 import canvas.Canvas;
 import geometry.Line;
 import geometry.Rectangle;
-
-import java.awt.*;
+import java.awt.Color;
 
 public class RectangleDrawerManager {
     private static LineDrawer currentDrawer;

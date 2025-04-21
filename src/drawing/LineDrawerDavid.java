@@ -10,7 +10,7 @@ import java.awt.Color;
  * 2. Draws lines with x1 < x0
  * 3. Enhance lines with m > 1 avoiding scattered plot
  */
-public class DavidLineDrawer implements LineDrawer {
+public class LineDrawerDavid implements LineDrawer {
     @Override
     public void drawLine(Line line, Canvas canvas, Color c) throws ArithmeticException {
 

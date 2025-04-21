@@ -4,7 +4,7 @@ import canvas.Canvas;
 import geometry.Circle;
 import java.awt.Color;
 
-public class MathCircleDrawer implements CircleDrawer {
+public class CircleDrawerMath implements CircleDrawer {
     @Override
     public void drawCircle(Circle circle, Canvas canvas, Color c) throws ArithmeticException {
         int xc = (int) circle.getXC();

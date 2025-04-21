@@ -1,20 +1,6 @@
 import canvas.Canvas;
-import drawing.BresenhamLineDrawer;
-import drawing.CircleDrawerManager;
-import drawing.DDALineDrawer;
-import drawing.DavidLineDrawer;
-import drawing.EightSymmetriesCircleDrawer;
-import drawing.LineDrawerManager;
-import drawing.MathCircleDrawer;
-import drawing.MathLineDrawer;
-import drawing.MidpointLineDrawer;
-import drawing.PolarCircleDrawer;
-import drawing.RectangleDrawerManager;
-import geometry.Circle;
-import geometry.Line;
-import geometry.Point;
-import geometry.Rectangle;
-
+import drawing.*;
+import geometry.*;
 import javax.swing.JFrame;
 import java.awt.Color;
 
@@ -32,9 +18,9 @@ public class EditorApp {
         frame.setVisible(true);
         frame.setResizable(false);
 
-        Circle circle = new Circle(250, 250, 200);
-        CircleDrawerManager.setDrawer(new MathCircleDrawer());
-        CircleDrawerManager.draw(circle, canvas, Color.WHITE);
+        Ellipse ellipse = new Ellipse(250, 250, 150, 200);
+        EllipseDrawerManager.setDrawer(new EllipseDrawerMidpoint());
+        EllipseDrawerManager.draw(ellipse, canvas, Color.WHITE);
     }
 
 }

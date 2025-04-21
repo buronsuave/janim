@@ -4,7 +4,7 @@ import canvas.Canvas;
 import geometry.Line;
 import java.awt.Color;
 
-public class DDALineDrawer implements LineDrawer {
+public class LineDrawerDDA implements LineDrawer {
     @Override
     public void drawLine(Line line, Canvas canvas, Color c) throws ArithmeticException {
         double dx = line.getX1() - line.getX0();
