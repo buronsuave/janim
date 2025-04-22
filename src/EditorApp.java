@@ -18,9 +18,9 @@ public class EditorApp {
         frame.setVisible(true);
         frame.setResizable(false);
 
-        Ellipse ellipse = new Ellipse(250, 250, 150, 200);
-        EllipseDrawerManager.setDrawer(new EllipseDrawerMidpoint());
-        EllipseDrawerManager.draw(ellipse, canvas, Color.WHITE);
+        Circle circle = new Circle(250, 250, 200);
+        CircleDrawerManager.setDrawer(new CircleStylizedDrawer(5, "1111000010000"));
+        CircleDrawerManager.draw(circle, canvas, Color.RED);
+        frame.repaint();
     }
-
 }
