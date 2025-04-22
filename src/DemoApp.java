@@ -45,7 +45,7 @@ public class DemoApp {
         Rectangle rectangle1 = new Rectangle(new Point(300, 430), new Point(550, 580));
         Rectangle rectangle2 = new Rectangle(new Point(500, 530), new Point(350, 480));
 
-        RectangleDrawerManager.setDrawer(new LineDrawerMidpoint());
+        RectangleDrawerManager.setLineDrawer(new LineDrawerMidpoint());
         RectangleDrawerManager.draw(rectangle1, canvas, Color.WHITE);
         RectangleDrawerManager.draw(rectangle2, canvas, Color.WHITE);
 

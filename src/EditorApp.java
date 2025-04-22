@@ -18,9 +18,8 @@ public class EditorApp {
         frame.setVisible(true);
         frame.setResizable(false);
 
-        Circle circle = new Circle(250, 250, 200);
-        CircleDrawerManager.setDrawer(new CircleStylizedDrawer(5, "1111000010000"));
-        CircleDrawerManager.draw(circle, canvas, Color.RED);
-        frame.repaint();
+        Rectangle rectangle = new Rectangle(100, 100, 200, 300);
+        RectangleDrawerManager.setRectangleDrawer(new RectangleStylizedDrawer(3, "1100"));
+        RectangleDrawerManager.draw(rectangle, canvas, Color.YELLOW);
     }
 }
