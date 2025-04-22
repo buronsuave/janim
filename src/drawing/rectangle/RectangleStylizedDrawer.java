@@ -1,23 +1,77 @@
-package drawing;
+package drawing.rectangle;
 
 import canvas.Canvas;
+import drawing.Mask;
+import drawing.Stroke;
 import geometry.Line;
+import geometry.Rectangle;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Collections;
 
-public class LineDrawerMidpoint implements LineDrawer {
+public class RectangleStylizedDrawer implements RectangleDrawer {
+    private final Stroke stroke;
+    private final Mask mask;
+    private final ArrayList<int[]> points;
+
+    public RectangleStylizedDrawer(int stroke, String mask) {
+        this(new Stroke(stroke), new Mask(mask));
+    }
+
+    public RectangleStylizedDrawer(Stroke stroke, Mask mask) {
+        if (stroke == null) {
+            this.stroke = new Stroke(1);
+        } else {
+            this.stroke = stroke;
+        }
+
+        if (mask == null) {
+            this.mask = new Mask("1");
+        } else {
+            this.mask = mask;
+        }
+
+        points = new ArrayList<>();
+        this.mask.scaleMask(this.stroke.getSize());
+    }
 
     @Override
-    public void drawLine(Line line, Canvas canvas, Color c) throws ArithmeticException {
-        canvas.putPixel((int) line.getX0(), (int) line.getY0(), c);
+    public void drawRectangle(Rectangle rectangle, Canvas canvas, Color c) throws ArithmeticException {
+        for (Line l: rectangle.getSides()) {
+            computeLine(l);
+        }
 
-        if (line.getX0() > line.getX1()) line.swapPoints();
+        mask.fixToIterations(points.size());
+        for (int i = 0; i < points.size(); ++i) {
+            if (mask.validate(i)) {
+                int[] point = points.get(i);
+                drawPointWithStroke(point[0], point[1], canvas, c);
+            }
+        }
+    }
 
+    private void computeLine(Line line) {
+        // Midpoint based approach
+        boolean swapped = false;
+        if (line.getX0() > line.getX1()) {
+            line.swapPoints();
+            swapped = true;
+        }
+
+        ArrayList<int[]> temp = new ArrayList<>();
+
+        // drawPointWithStroke((int) line.getX0(), (int) line.getY0(), canvas, c);
+        temp.add(new int[] {(int) line.getX0(), (int) line.getY0()});
         double dx = line.getX1() - line.getX0();
         double dy = line.getY1() - line.getY0();
 
         final int scenario = getScenario(line);
 
         int A, B, d, x0, y0, x1, y1, xk, yk;
+
+        // For mask
+        int index = 0;
+
         switch (scenario) {
             case 1: // 0 <= m <= 1
                 x0 = (int) line.getX0();
@@ -35,7 +89,8 @@ public class LineDrawerMidpoint implements LineDrawer {
                         d += B;
                         yk++;
                     }
-                    canvas.putPixel(xk, yk, c);
+
+                    temp.add(new int[] {xk, yk});
                 }
                 break;
 
@@ -55,7 +110,8 @@ public class LineDrawerMidpoint implements LineDrawer {
                         d += B;
                         yk--;
                     }
-                    canvas.putPixel(xk, yk, c);
+
+                    temp.add(new int[] {xk, yk});
                 }
                 break;
 
@@ -81,7 +137,8 @@ public class LineDrawerMidpoint implements LineDrawer {
                         d += B;
                         xk++;
                     }
-                    canvas.putPixel(xk, yk, c);
+
+                    temp.add(new int[] {xk, yk});
                 }
                 break;
 
@@ -101,9 +158,21 @@ public class LineDrawerMidpoint implements LineDrawer {
                         d += B;
                         xk++;
                     }
-                    canvas.putPixel(xk, yk, c);
+
+                    temp.add(new int[] {xk, yk});
                 }
                 break;
+        }
+
+        if (swapped)
+            Collections.reverse(temp);
+
+        points.addAll(temp);
+    }
+
+    private void drawPointWithStroke(int x, int y, Canvas canvas, Color c) {
+        for (int[] pair : stroke.getScopeMatrix()) {
+            canvas.putPixel(x + pair[0], y + pair[1], c);
         }
     }
 

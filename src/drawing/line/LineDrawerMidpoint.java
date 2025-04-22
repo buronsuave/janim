@@ -1,62 +1,23 @@
-package drawing;
+package drawing.line;
 
 import canvas.Canvas;
 import geometry.Line;
 import java.awt.Color;
-import java.util.ArrayList;
 
-public class LineStylizedDrawer implements LineDrawer {
-    private final Stroke stroke;
-    private final Mask mask;
-    private final ArrayList<int[]> points;
-
-    public LineStylizedDrawer(int stroke, String mask) {
-        this(new Stroke(stroke), new Mask(mask));
-    }
-
-    public LineStylizedDrawer(Stroke stroke, Mask mask) {
-        if (stroke == null) {
-            this.stroke = new Stroke(1);
-        } else {
-            this.stroke = stroke;
-        }
-
-        if (mask == null) {
-            this.mask = new Mask("1");
-        } else {
-            this.mask = mask;
-        }
-
-        points = new ArrayList<>();
-        this.mask.scaleMask(this.stroke.getSize());
-    }
+public class LineDrawerMidpoint implements LineDrawer {
 
     @Override
     public void drawLine(Line line, Canvas canvas, Color c) throws ArithmeticException {
-        computeLine(line, canvas, c);
+        canvas.putPixel((int) line.getX0(), (int) line.getY0(), c);
 
-        // Adjust mask if needed
-        if (mask.length() % points.size() != 0) {
-            mask.fixToIterations(points.size());
-        }
-    }
-
-    private void computeLine(Line line, Canvas canvas, Color c) {
-        // Midpoint based approach
         if (line.getX0() > line.getX1()) line.swapPoints();
 
-        // drawPointWithStroke((int) line.getX0(), (int) line.getY0(), canvas, c);
-        points.add(new int[] {(int) line.getX0(), (int) line.getY0()});
         double dx = line.getX1() - line.getX0();
         double dy = line.getY1() - line.getY0();
 
         final int scenario = getScenario(line);
 
         int A, B, d, x0, y0, x1, y1, xk, yk;
-
-        // For mask
-        int index = 0;
-
         switch (scenario) {
             case 1: // 0 <= m <= 1
                 x0 = (int) line.getX0();
@@ -74,8 +35,7 @@ public class LineStylizedDrawer implements LineDrawer {
                         d += B;
                         yk++;
                     }
-
-                    points.add(new int[] {xk, yk});
+                    canvas.putPixel(xk, yk, c);
                 }
                 break;
 
@@ -95,8 +55,7 @@ public class LineStylizedDrawer implements LineDrawer {
                         d += B;
                         yk--;
                     }
-
-                    points.add(new int[] {xk, yk});
+                    canvas.putPixel(xk, yk, c);
                 }
                 break;
 
@@ -122,8 +81,7 @@ public class LineStylizedDrawer implements LineDrawer {
                         d += B;
                         xk++;
                     }
-
-                    points.add(new int[] {xk, yk});
+                    canvas.putPixel(xk, yk, c);
                 }
                 break;
 
@@ -143,24 +101,9 @@ public class LineStylizedDrawer implements LineDrawer {
                         d += B;
                         xk++;
                     }
-
-                    points.add(new int[] {xk, yk});
+                    canvas.putPixel(xk, yk, c);
                 }
                 break;
-        }
-
-        mask.fixToIterations(points.size());
-        for (int i = 0; i < points.size(); ++i) {
-            if (mask.validate(i)) {
-                int[] point = points.get(i);
-                drawPointWithStroke(point[0], point[1], canvas, c);
-            }
-        }
-    }
-
-    private void drawPointWithStroke(int x, int y, Canvas canvas, Color c) {
-        for (int[] pair : stroke.getScopeMatrix()) {
-            canvas.putPixel(x + pair[0], y + pair[1], c);
         }
     }
 

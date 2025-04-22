@@ -1,4 +1,4 @@
-package drawing;
+package drawing.rectangle;
 
 import canvas.Canvas;
 import geometry.Rectangle;

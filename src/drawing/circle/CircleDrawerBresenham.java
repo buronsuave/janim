@@ -1,4 +1,4 @@
-package drawing;
+package drawing.circle;
 
 import canvas.Canvas;
 import geometry.Circle;

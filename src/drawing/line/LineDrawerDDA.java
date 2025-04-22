@@ -1,4 +1,4 @@
-package drawing;
+package drawing.line;
 
 import canvas.Canvas;
 import geometry.Line;

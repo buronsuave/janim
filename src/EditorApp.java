@@ -1,5 +1,6 @@
 import canvas.Canvas;
-import drawing.*;
+import drawing.rectangle.RectangleDrawerManager;
+import drawing.rectangle.RectangleStylizedDrawer;
 import geometry.*;
 import javax.swing.JFrame;
 import java.awt.Color;

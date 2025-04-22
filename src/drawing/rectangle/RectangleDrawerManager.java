@@ -1,6 +1,7 @@
-package drawing;
+package drawing.rectangle;
 
 import canvas.Canvas;
+import drawing.line.LineDrawer;
 import geometry.Line;
 import geometry.Rectangle;
 import java.awt.Color;

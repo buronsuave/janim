@@ -1,6 +1,8 @@
-package drawing;
+package drawing.ellipse;
 
 import canvas.Canvas;
+import drawing.Mask;
+import drawing.Stroke;
 import geometry.Ellipse;
 import java.awt.Color;
 import java.util.ArrayList;

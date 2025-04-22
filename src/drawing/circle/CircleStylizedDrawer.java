@@ -1,6 +1,8 @@
-package drawing;
+package drawing.circle;
 
 import canvas.Canvas;
+import drawing.Mask;
+import drawing.Stroke;
 import geometry.Circle;
 import java.awt.Color;
 import java.util.ArrayList;

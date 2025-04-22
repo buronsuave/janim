@@ -1,4 +1,4 @@
-package drawing;
+package drawing.ellipse;
 
 import canvas.Canvas;
 import geometry.Ellipse;

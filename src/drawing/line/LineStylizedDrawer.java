@@ -1,22 +1,22 @@
-package drawing;
+package drawing.line;
 
 import canvas.Canvas;
+import drawing.Mask;
+import drawing.Stroke;
 import geometry.Line;
-import geometry.Rectangle;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class RectangleStylizedDrawer implements RectangleDrawer {
+public class LineStylizedDrawer implements LineDrawer {
     private final Stroke stroke;
     private final Mask mask;
     private final ArrayList<int[]> points;
 
-    public RectangleStylizedDrawer(int stroke, String mask) {
+    public LineStylizedDrawer(int stroke, String mask) {
         this(new Stroke(stroke), new Mask(mask));
     }
 
-    public RectangleStylizedDrawer(Stroke stroke, Mask mask) {
+    public LineStylizedDrawer(Stroke stroke, Mask mask) {
         if (stroke == null) {
             this.stroke = new Stroke(1);
         } else {
@@ -34,32 +34,21 @@ public class RectangleStylizedDrawer implements RectangleDrawer {
     }
 
     @Override
-    public void drawRectangle(Rectangle rectangle, Canvas canvas, Color c) throws ArithmeticException {
-        for (Line l: rectangle.getSides()) {
-            computeLine(l);
-        }
+    public void drawLine(Line line, Canvas canvas, Color c) throws ArithmeticException {
+        computeLine(line, canvas, c);
 
-        mask.fixToIterations(points.size());
-        for (int i = 0; i < points.size(); ++i) {
-            if (mask.validate(i)) {
-                int[] point = points.get(i);
-                drawPointWithStroke(point[0], point[1], canvas, c);
-            }
+        // Adjust mask if needed
+        if (mask.length() % points.size() != 0) {
+            mask.fixToIterations(points.size());
         }
     }
 
-    private void computeLine(Line line) {
+    private void computeLine(Line line, Canvas canvas, Color c) {
         // Midpoint based approach
-        boolean swapped = false;
-        if (line.getX0() > line.getX1()) {
-            line.swapPoints();
-            swapped = true;
-        }
-
-        ArrayList<int[]> temp = new ArrayList<>();
+        if (line.getX0() > line.getX1()) line.swapPoints();
 
         // drawPointWithStroke((int) line.getX0(), (int) line.getY0(), canvas, c);
-        temp.add(new int[] {(int) line.getX0(), (int) line.getY0()});
+        points.add(new int[] {(int) line.getX0(), (int) line.getY0()});
         double dx = line.getX1() - line.getX0();
         double dy = line.getY1() - line.getY0();
 
@@ -88,7 +77,7 @@ public class RectangleStylizedDrawer implements RectangleDrawer {
                         yk++;
                     }
 
-                    temp.add(new int[] {xk, yk});
+                    points.add(new int[] {xk, yk});
                 }
                 break;
 
@@ -109,7 +98,7 @@ public class RectangleStylizedDrawer implements RectangleDrawer {
                         yk--;
                     }
 
-                    temp.add(new int[] {xk, yk});
+                    points.add(new int[] {xk, yk});
                 }
                 break;
 
@@ -136,7 +125,7 @@ public class RectangleStylizedDrawer implements RectangleDrawer {
                         xk++;
                     }
 
-                    temp.add(new int[] {xk, yk});
+                    points.add(new int[] {xk, yk});
                 }
                 break;
 
@@ -157,15 +146,18 @@ public class RectangleStylizedDrawer implements RectangleDrawer {
                         xk++;
                     }
 
-                    temp.add(new int[] {xk, yk});
+                    points.add(new int[] {xk, yk});
                 }
                 break;
         }
 
-        if (swapped)
-            Collections.reverse(temp);
-
-        points.addAll(temp);
+        mask.fixToIterations(points.size());
+        for (int i = 0; i < points.size(); ++i) {
+            if (mask.validate(i)) {
+                int[] point = points.get(i);
+                drawPointWithStroke(point[0], point[1], canvas, c);
+            }
+        }
     }
 
     private void drawPointWithStroke(int x, int y, Canvas canvas, Color c) {

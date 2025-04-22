@@ -1,5 +1,11 @@
 import canvas.Canvas;
-import drawing.*;
+import drawing.circle.CircleDrawerManager;
+import drawing.circle.CircleDrawerMidpoint;
+import drawing.ellipse.EllipseDrawerManager;
+import drawing.ellipse.EllipseDrawerMidpoint;
+import drawing.line.LineDrawerManager;
+import drawing.line.LineDrawerMidpoint;
+import drawing.rectangle.RectangleDrawerManager;
 import geometry.*;
 import javax.swing.JFrame;
 import java.awt.Color;
