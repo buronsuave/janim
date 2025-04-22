@@ -11,16 +11,16 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class EllipseStylizedDrawer implements EllipseDrawer {
+public class EllipseDrawerStylized implements EllipseDrawer {
     private final Stroke stroke;
     private final Mask mask;
     private final ArrayList<int[]> points;
 
-    public EllipseStylizedDrawer(int stroke, String mask) {
+    public EllipseDrawerStylized(int stroke, String mask) {
         this(new Stroke(stroke), new Mask(mask));
     }
 
-    public EllipseStylizedDrawer(Stroke stroke, Mask mask) {
+    public EllipseDrawerStylized(Stroke stroke, Mask mask) {
         if (stroke == null) {
             this.stroke = new Stroke(1);
         } else {

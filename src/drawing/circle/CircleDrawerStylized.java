@@ -7,16 +7,16 @@ import geometry.Circle;
 import java.awt.Color;
 import java.util.ArrayList;
 
-public class CircleStylizedDrawer implements CircleDrawer {
+public class CircleDrawerStylized implements CircleDrawer {
     private final Stroke stroke;
     private final Mask mask;
     private final ArrayList<int[]> points;
 
-    public CircleStylizedDrawer(int stroke, String mask) {
+    public CircleDrawerStylized(int stroke, String mask) {
         this(new Stroke(stroke), new Mask(mask));
     }
 
-    public CircleStylizedDrawer(Stroke stroke, Mask mask) {
+    public CircleDrawerStylized(Stroke stroke, Mask mask) {
         if (stroke == null) {
             this.stroke = new Stroke(1);
         } else {

@@ -1,6 +1,6 @@
 import canvas.Canvas;
 import drawing.rectangle.RectangleDrawerManager;
-import drawing.rectangle.RectangleStylizedDrawer;
+import drawing.rectangle.RectangleDrawerStylized;
 import geometry.*;
 import javax.swing.JFrame;
 import java.awt.Color;
@@ -20,7 +20,7 @@ public class EditorApp {
         frame.setResizable(false);
 
         Rectangle rectangle = new Rectangle(100, 100, 200, 300);
-        RectangleDrawerManager.setRectangleDrawer(new RectangleStylizedDrawer(3, "1100"));
+        RectangleDrawerManager.setRectangleDrawer(new RectangleDrawerStylized(3, "1100"));
         RectangleDrawerManager.draw(rectangle, canvas, Color.YELLOW);
     }
 }

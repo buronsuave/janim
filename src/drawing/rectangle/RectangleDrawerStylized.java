@@ -1,22 +1,24 @@
-package drawing.line;
+package drawing.rectangle;
 
 import canvas.Canvas;
 import drawing.Mask;
 import drawing.Stroke;
 import geometry.Line;
+import geometry.Rectangle;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class LineStylizedDrawer implements LineDrawer {
+public class RectangleDrawerStylized implements RectangleDrawer {
     private final Stroke stroke;
     private final Mask mask;
     private final ArrayList<int[]> points;
 
-    public LineStylizedDrawer(int stroke, String mask) {
+    public RectangleDrawerStylized(int stroke, String mask) {
         this(new Stroke(stroke), new Mask(mask));
     }
 
-    public LineStylizedDrawer(Stroke stroke, Mask mask) {
+    public RectangleDrawerStylized(Stroke stroke, Mask mask) {
         if (stroke == null) {
             this.stroke = new Stroke(1);
         } else {
@@ -34,21 +36,32 @@ public class LineStylizedDrawer implements LineDrawer {
     }
 
     @Override
-    public void drawLine(Line line, Canvas canvas, Color c) throws ArithmeticException {
-        computeLine(line, canvas, c);
+    public void drawRectangle(Rectangle rectangle, Canvas canvas, Color c) throws ArithmeticException {
+        for (Line l: rectangle.getSides()) {
+            computeLine(l);
+        }
 
-        // Adjust mask if needed
-        if (mask.length() % points.size() != 0) {
-            mask.fixToIterations(points.size());
+        mask.fixToIterations(points.size());
+        for (int i = 0; i < points.size(); ++i) {
+            if (mask.validate(i)) {
+                int[] point = points.get(i);
+                drawPointWithStroke(point[0], point[1], canvas, c);
+            }
         }
     }
 
-    private void computeLine(Line line, Canvas canvas, Color c) {
+    private void computeLine(Line line) {
         // Midpoint based approach
-        if (line.getX0() > line.getX1()) line.swapPoints();
+        boolean swapped = false;
+        if (line.getX0() > line.getX1()) {
+            line.swapPoints();
+            swapped = true;
+        }
+
+        ArrayList<int[]> temp = new ArrayList<>();
 
         // drawPointWithStroke((int) line.getX0(), (int) line.getY0(), canvas, c);
-        points.add(new int[] {(int) line.getX0(), (int) line.getY0()});
+        temp.add(new int[] {(int) line.getX0(), (int) line.getY0()});
         double dx = line.getX1() - line.getX0();
         double dy = line.getY1() - line.getY0();
 
@@ -77,7 +90,7 @@ public class LineStylizedDrawer implements LineDrawer {
                         yk++;
                     }
 
-                    points.add(new int[] {xk, yk});
+                    temp.add(new int[] {xk, yk});
                 }
                 break;
 
@@ -98,7 +111,7 @@ public class LineStylizedDrawer implements LineDrawer {
                         yk--;
                     }
 
-                    points.add(new int[] {xk, yk});
+                    temp.add(new int[] {xk, yk});
                 }
                 break;
 
@@ -125,7 +138,7 @@ public class LineStylizedDrawer implements LineDrawer {
                         xk++;
                     }
 
-                    points.add(new int[] {xk, yk});
+                    temp.add(new int[] {xk, yk});
                 }
                 break;
 
@@ -146,18 +159,15 @@ public class LineStylizedDrawer implements LineDrawer {
                         xk++;
                     }
 
-                    points.add(new int[] {xk, yk});
+                    temp.add(new int[] {xk, yk});
                 }
                 break;
         }
 
-        mask.fixToIterations(points.size());
-        for (int i = 0; i < points.size(); ++i) {
-            if (mask.validate(i)) {
-                int[] point = points.get(i);
-                drawPointWithStroke(point[0], point[1], canvas, c);
-            }
-        }
+        if (swapped)
+            Collections.reverse(temp);
+
+        points.addAll(temp);
     }
 
     private void drawPointWithStroke(int x, int y, Canvas canvas, Color c) {
