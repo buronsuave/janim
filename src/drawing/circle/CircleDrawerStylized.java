@@ -3,7 +3,7 @@ package drawing.circle;
 import canvas.Canvas;
 import drawing.Mask;
 import drawing.Stroke;
-import drawing.filling.FillingAlgorithm;
+import drawing.filling.Filler;
 import geometry.Circle;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -12,17 +12,17 @@ public class CircleDrawerStylized implements CircleDrawer {
     private final Stroke stroke;
     private final Mask mask;
     private final ArrayList<int[]> points;
-    private final FillingAlgorithm fillingAlgorithm;
+    private final Filler filler;
 
     public CircleDrawerStylized(int stroke, String mask) {
         this(new Stroke(stroke), new Mask(mask), null);
     }
 
-    public CircleDrawerStylized(int stroke, String mask, FillingAlgorithm fillAlgo) {
+    public CircleDrawerStylized(int stroke, String mask, Filler fillAlgo) {
         this(new Stroke(stroke), new Mask(mask), fillAlgo);
     }
 
-    public CircleDrawerStylized(Stroke stroke, Mask mask, FillingAlgorithm fillAlgo) {
+    public CircleDrawerStylized(Stroke stroke, Mask mask, Filler fillAlgo) {
         if (stroke == null) {
             this.stroke = new Stroke(1);
         } else {
@@ -36,7 +36,7 @@ public class CircleDrawerStylized implements CircleDrawer {
         }
 
         // Filling Algorithm is null when no fill is required
-        this.fillingAlgorithm = fillAlgo;
+        this.filler = fillAlgo;
 
         points = new ArrayList<>();
         this.mask.scaleMask(this.stroke.getSize());
@@ -46,7 +46,7 @@ public class CircleDrawerStylized implements CircleDrawer {
     public void drawCircle(Circle circle, Canvas canvas, Color c) throws ArithmeticException {
         computeCircle(circle);
 
-        if (fillingAlgorithm != null) {
+        if (filler != null) {
             // drawSymmetric points
             for (int[] point : points) {
                 drawSymmetricPointsWithoutStyle(
@@ -54,12 +54,12 @@ public class CircleDrawerStylized implements CircleDrawer {
                         point[1],
                         point[2],
                         point[3],
-                        canvas, fillingAlgorithm.getColorFill());
+                        canvas, filler.getColorFill());
             }
 
             // Fill from center pixel
-            fillingAlgorithm.fill((int) circle.getXC(), (int) circle.getYC(),
-                    fillingAlgorithm.getColorFill(), canvas);
+            filler.fill((int) circle.getXC(), (int) circle.getYC(),
+                    filler.getColorFill(), canvas);
         }
 
         // Adjust mask if needed

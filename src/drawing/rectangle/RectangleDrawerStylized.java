@@ -3,7 +3,7 @@ package drawing.rectangle;
 import canvas.Canvas;
 import drawing.Mask;
 import drawing.Stroke;
-import drawing.filling.FillingAlgorithm;
+import drawing.filling.Filler;
 import geometry.Line;
 import geometry.Rectangle;
 import java.awt.Color;
@@ -14,17 +14,17 @@ public class RectangleDrawerStylized implements RectangleDrawer {
     private final Stroke stroke;
     private final Mask mask;
     private final ArrayList<int[]> points;
-    private final FillingAlgorithm fillingAlgorithm;
+    private final Filler filler;
 
     public RectangleDrawerStylized(int stroke, String mask) {
         this(new Stroke(stroke), new Mask(mask), null);
     }
 
-    public RectangleDrawerStylized(int stroke, String mask, FillingAlgorithm fillAlgo) {
+    public RectangleDrawerStylized(int stroke, String mask, Filler fillAlgo) {
         this(new Stroke(stroke), new Mask(mask), fillAlgo);
     }
 
-    public RectangleDrawerStylized(Stroke stroke, Mask mask, FillingAlgorithm fillAlgo) {
+    public RectangleDrawerStylized(Stroke stroke, Mask mask, Filler fillAlgo) {
         if (stroke == null) {
             this.stroke = new Stroke(1);
         } else {
@@ -38,7 +38,7 @@ public class RectangleDrawerStylized implements RectangleDrawer {
         }
 
         // Filling Algorithm is null when no fill is required
-        this.fillingAlgorithm = fillAlgo;
+        this.filler = fillAlgo;
 
         points = new ArrayList<>();
         this.mask.scaleMask(this.stroke.getSize());
@@ -50,16 +50,16 @@ public class RectangleDrawerStylized implements RectangleDrawer {
             computeLine(l);
         }
 
-        if (fillingAlgorithm != null) {
+        if (filler != null) {
             // Draws shape
             for (int[] point : points) {
-                canvas.putPixel(point[0], point[1], fillingAlgorithm.getColorFill());
+                canvas.putPixel(point[0], point[1], filler.getColorFill());
             }
 
             // Fill from center pixel
             int px = (int) ((rectangle.getVertices()[0].getX() + rectangle.getVertices()[2].getX())/2);
             int py = (int) ((rectangle.getVertices()[0].getY() + rectangle.getVertices()[2].getY())/2);
-            fillingAlgorithm.fill(px, py, fillingAlgorithm.getColorFill(), canvas);
+            filler.fill(px, py, filler.getColorFill(), canvas);
         }
 
         mask.fixToIterations(points.size());

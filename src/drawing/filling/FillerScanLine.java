@@ -5,8 +5,8 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class ScanLineAlgorithm extends FillingAlgorithm {
-    public ScanLineAlgorithm(Color fillColor) {
+public class FillerScanLine extends Filler {
+    public FillerScanLine(Color fillColor) {
         super(fillColor);
     }
 

@@ -4,9 +4,9 @@ import canvas.Canvas;
 
 import java.awt.Color;
 
-public abstract class FillingAlgorithm {
+public abstract class Filler {
     protected Color colorFill;
-    public FillingAlgorithm(Color colorFill) {
+    public Filler(Color colorFill) {
         this.colorFill = colorFill;
     }
 

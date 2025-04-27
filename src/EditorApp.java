@@ -1,17 +1,18 @@
 import canvas.Canvas;
-import drawing.circle.CircleDrawerManager;
-import drawing.circle.CircleDrawerStylized;
-import drawing.ellipse.EllipseDrawerManager;
-import drawing.ellipse.EllipseDrawerStylized;
-import drawing.filling.FloodFillAlgorithm;
-import drawing.filling.ScanLineAlgorithm;
+import drawing.clipping.LineClipperExplicit;
+import drawing.clipping.LineClipperSutherland;
 import drawing.line.LineDrawerManager;
 import drawing.line.LineDrawerStylized;
 import drawing.rectangle.RectangleDrawerManager;
 import drawing.rectangle.RectangleDrawerStylized;
 import geometry.*;
+import org.w3c.dom.css.Rect;
+
 import javax.swing.JFrame;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class EditorApp {
 
@@ -27,21 +28,60 @@ public class EditorApp {
         frame.setVisible(true);
         frame.setResizable(false);
 
-        Line line1 = new Line(100, 100, 100, 400);
-        Line line2 = new Line(100, 400, 250, 270);
-        Line line3 = new Line(250, 270, 430, 450);
-        Line line4 = new Line(430, 450, 300, 30);
-        Line line5 = new Line(300, 30, 100, 100);
-        LineDrawerManager.setDrawer(new LineDrawerStylized(3, "1"));
-        LineDrawerManager.draw(line1, canvas, Color.YELLOW);
-        LineDrawerManager.draw(line2, canvas, Color.YELLOW);
-        LineDrawerManager.draw(line3, canvas, Color.YELLOW);
-        LineDrawerManager.draw(line4, canvas, Color.YELLOW);
-        LineDrawerManager.draw(line5, canvas, Color.YELLOW);
+        ArrayList<Line> lines = new ArrayList<>();
+        int r = 70;
+        int R = 200;
+        for (double t = 0; t < 2*Math.PI; t += Math.PI/6) {
+            Line line1 = new Line(
+                    250 + r*Math.cos(t),
+                    250 + r*Math.sin(t),
+                    250 + R*Math.cos(t + Math.PI/12),
+                    250 + R*Math.sin(t + Math.PI/12));
+            Line line2 = new Line(
+                    250 + r*Math.cos(t),
+                    250 + r*Math.sin(t),
+                    250 + R*Math.cos(t - Math.PI/12),
+                    250 + R*Math.sin(t - Math.PI/12));
+            lines.add(line1);
+            lines.add(line2);
+        }
 
-        FloodFillAlgorithm algo = new FloodFillAlgorithm(Color.YELLOW);
-        algo.fill(250, 250, Color.YELLOW, canvas);
+        int viewPortX0 = 0;
+        int viewPortY0 = 20;
+        int viewPortWidth = 100;
+        int viewPortHeight = 460;
 
-        frame.repaint();
+        for (; viewPortX0 < 450; viewPortX0++) {
+            /*
+            LineDrawerManager.setDrawer(new LineDrawerStylized(1, "1"));
+            for (Line line : lines) {
+                LineDrawerManager.draw(line, canvas, Color.WHITE);
+            }
+
+             */
+
+            Rectangle rect = new Rectangle(viewPortX0, viewPortY0, viewPortWidth, viewPortHeight);
+            RectangleDrawerManager.setRectangleDrawer(new RectangleDrawerStylized(3, "10", null));
+            RectangleDrawerManager.draw(rect,canvas, Color.RED);
+
+            LineClipperExplicit clipper = new LineClipperExplicit(
+                    lines, viewPortX0, viewPortY0, viewPortX0+viewPortWidth, viewPortY0+viewPortHeight
+            );
+            clipper.clip();
+
+            LineDrawerManager.setDrawer(new LineDrawerStylized(3, "1"));
+            for (Line line : clipper.getLines()) {
+                LineDrawerManager.draw(line, canvas, Color.YELLOW);
+            }
+
+            frame.repaint();
+            try {
+                Thread.sleep(30);
+                RectangleDrawerManager.setRectangleDrawer(new RectangleDrawerStylized(3, "1", null));
+                RectangleDrawerManager.draw(rect,canvas, Color.BLACK);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

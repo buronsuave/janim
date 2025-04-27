@@ -5,9 +5,9 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class FloodFillAlgorithm extends FillingAlgorithm {
+public class FillerFloodFill extends Filler {
 
-    public FloodFillAlgorithm(Color fillColor) {
+    public FillerFloodFill(Color fillColor) {
         super(fillColor);
     }
 

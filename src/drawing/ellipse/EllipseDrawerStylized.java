@@ -3,7 +3,7 @@ package drawing.ellipse;
 import canvas.Canvas;
 import drawing.Mask;
 import drawing.Stroke;
-import drawing.filling.FillingAlgorithm;
+import drawing.filling.Filler;
 import geometry.Ellipse;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -15,17 +15,17 @@ public class EllipseDrawerStylized implements EllipseDrawer {
     private final Stroke stroke;
     private final Mask mask;
     private final ArrayList<int[]> points;
-    private final FillingAlgorithm fillingAlgorithm;
+    private final Filler filler;
 
     public EllipseDrawerStylized(int stroke, String mask) {
         this(new Stroke(stroke), new Mask(mask), null);
     }
 
-    public EllipseDrawerStylized(int stroke, String mask, FillingAlgorithm fillAlgo) {
+    public EllipseDrawerStylized(int stroke, String mask, Filler fillAlgo) {
         this(new Stroke(stroke), new Mask(mask), fillAlgo);
     }
 
-    public EllipseDrawerStylized(Stroke stroke, Mask mask, FillingAlgorithm fillAlgo) {
+    public EllipseDrawerStylized(Stroke stroke, Mask mask, Filler fillAlgo) {
         if (stroke == null) {
             this.stroke = new Stroke(1);
         } else {
@@ -39,7 +39,7 @@ public class EllipseDrawerStylized implements EllipseDrawer {
         }
 
         // Filling Algorithm is null when no fill is required
-        this.fillingAlgorithm = fillAlgo;
+        this.filler = fillAlgo;
 
         points = new ArrayList<>();
         this.mask.scaleMask(this.stroke.getSize());
@@ -49,7 +49,7 @@ public class EllipseDrawerStylized implements EllipseDrawer {
     public void drawEllipse(Ellipse ellipse, Canvas canvas, Color c) throws ArithmeticException {
         computeEllipse(ellipse);
 
-        if (fillingAlgorithm != null) {
+        if (filler != null) {
             // drawSymmetric points
             for (int[] point : points) {
                 drawSymmetricPointsWithoutStyle(
@@ -57,12 +57,12 @@ public class EllipseDrawerStylized implements EllipseDrawer {
                         point[1],
                         point[2],
                         point[3],
-                        canvas, fillingAlgorithm.getColorFill());
+                        canvas, filler.getColorFill());
             }
 
             // Fill from center pixel
-            fillingAlgorithm.fill((int) ellipse.getXC(), (int) ellipse.getYC(),
-                    fillingAlgorithm.getColorFill(), canvas);
+            filler.fill((int) ellipse.getXC(), (int) ellipse.getYC(),
+                    filler.getColorFill(), canvas);
         }
 
         // Adjust mask if needed
