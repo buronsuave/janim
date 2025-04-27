@@ -1,4 +1,12 @@
 import canvas.Canvas;
+import drawing.circle.CircleDrawerManager;
+import drawing.circle.CircleDrawerStylized;
+import drawing.ellipse.EllipseDrawerManager;
+import drawing.ellipse.EllipseDrawerStylized;
+import drawing.filling.FloodFillAlgorithm;
+import drawing.filling.ScanLineAlgorithm;
+import drawing.line.LineDrawerManager;
+import drawing.line.LineDrawerStylized;
 import drawing.rectangle.RectangleDrawerManager;
 import drawing.rectangle.RectangleDrawerStylized;
 import geometry.*;
@@ -19,8 +27,21 @@ public class EditorApp {
         frame.setVisible(true);
         frame.setResizable(false);
 
-        Rectangle rectangle = new Rectangle(100, 100, 200, 300);
-        RectangleDrawerManager.setRectangleDrawer(new RectangleDrawerStylized(3, "1100"));
-        RectangleDrawerManager.draw(rectangle, canvas, Color.YELLOW);
+        Line line1 = new Line(100, 100, 100, 400);
+        Line line2 = new Line(100, 400, 250, 270);
+        Line line3 = new Line(250, 270, 430, 450);
+        Line line4 = new Line(430, 450, 300, 30);
+        Line line5 = new Line(300, 30, 100, 100);
+        LineDrawerManager.setDrawer(new LineDrawerStylized(3, "1"));
+        LineDrawerManager.draw(line1, canvas, Color.YELLOW);
+        LineDrawerManager.draw(line2, canvas, Color.YELLOW);
+        LineDrawerManager.draw(line3, canvas, Color.YELLOW);
+        LineDrawerManager.draw(line4, canvas, Color.YELLOW);
+        LineDrawerManager.draw(line5, canvas, Color.YELLOW);
+
+        FloodFillAlgorithm algo = new FloodFillAlgorithm(Color.YELLOW);
+        algo.fill(250, 250, Color.YELLOW, canvas);
+
+        frame.repaint();
     }
 }

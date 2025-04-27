@@ -3,6 +3,7 @@ package drawing.circle;
 import canvas.Canvas;
 import drawing.Mask;
 import drawing.Stroke;
+import drawing.filling.FillingAlgorithm;
 import geometry.Circle;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -11,12 +12,17 @@ public class CircleDrawerStylized implements CircleDrawer {
     private final Stroke stroke;
     private final Mask mask;
     private final ArrayList<int[]> points;
+    private final FillingAlgorithm fillingAlgorithm;
 
     public CircleDrawerStylized(int stroke, String mask) {
-        this(new Stroke(stroke), new Mask(mask));
+        this(new Stroke(stroke), new Mask(mask), null);
     }
 
-    public CircleDrawerStylized(Stroke stroke, Mask mask) {
+    public CircleDrawerStylized(int stroke, String mask, FillingAlgorithm fillAlgo) {
+        this(new Stroke(stroke), new Mask(mask), fillAlgo);
+    }
+
+    public CircleDrawerStylized(Stroke stroke, Mask mask, FillingAlgorithm fillAlgo) {
         if (stroke == null) {
             this.stroke = new Stroke(1);
         } else {
@@ -29,6 +35,9 @@ public class CircleDrawerStylized implements CircleDrawer {
             this.mask = mask;
         }
 
+        // Filling Algorithm is null when no fill is required
+        this.fillingAlgorithm = fillAlgo;
+
         points = new ArrayList<>();
         this.mask.scaleMask(this.stroke.getSize());
     }
@@ -36,6 +45,22 @@ public class CircleDrawerStylized implements CircleDrawer {
     @Override
     public void drawCircle(Circle circle, Canvas canvas, Color c) throws ArithmeticException {
         computeCircle(circle);
+
+        if (fillingAlgorithm != null) {
+            // drawSymmetric points
+            for (int[] point : points) {
+                drawSymmetricPointsWithoutStyle(
+                        point[0],
+                        point[1],
+                        point[2],
+                        point[3],
+                        canvas, fillingAlgorithm.getColorFill());
+            }
+
+            // Fill from center pixel
+            fillingAlgorithm.fill((int) circle.getXC(), (int) circle.getYC(),
+                    fillingAlgorithm.getColorFill(), canvas);
+        }
 
         // Adjust mask if needed
         if (mask.length() % points.size() != 0) {
@@ -90,6 +115,17 @@ public class CircleDrawerStylized implements CircleDrawer {
             drawPointWithStroke(xc + x, yc - y, canvas, c);
             drawPointWithStroke(xc - y, yc - x, canvas, c);
         }
+    }
+
+    private void drawSymmetricPointsWithoutStyle(int xc, int yc, int x, int y, Canvas canvas, Color c) {
+        canvas.putPixel(xc + x, yc + y, c);
+        canvas.putPixel(xc - y, yc + x, c);
+        canvas.putPixel(xc + y, yc - x, c);
+        canvas.putPixel(xc - x, yc - y, c);
+        canvas.putPixel(xc + y, yc + x, c);
+        canvas.putPixel(xc - x, yc + y, c);
+        canvas.putPixel(xc + x, yc - y, c);
+        canvas.putPixel(xc - y, yc - x, c);
     }
 
     private void drawPointWithStroke(int x, int y, Canvas canvas, Color c) {

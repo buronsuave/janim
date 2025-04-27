@@ -3,10 +3,10 @@ package drawing.ellipse;
 import canvas.Canvas;
 import drawing.Mask;
 import drawing.Stroke;
+import drawing.filling.FillingAlgorithm;
 import geometry.Ellipse;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -15,12 +15,17 @@ public class EllipseDrawerStylized implements EllipseDrawer {
     private final Stroke stroke;
     private final Mask mask;
     private final ArrayList<int[]> points;
+    private final FillingAlgorithm fillingAlgorithm;
 
     public EllipseDrawerStylized(int stroke, String mask) {
-        this(new Stroke(stroke), new Mask(mask));
+        this(new Stroke(stroke), new Mask(mask), null);
     }
 
-    public EllipseDrawerStylized(Stroke stroke, Mask mask) {
+    public EllipseDrawerStylized(int stroke, String mask, FillingAlgorithm fillAlgo) {
+        this(new Stroke(stroke), new Mask(mask), fillAlgo);
+    }
+
+    public EllipseDrawerStylized(Stroke stroke, Mask mask, FillingAlgorithm fillAlgo) {
         if (stroke == null) {
             this.stroke = new Stroke(1);
         } else {
@@ -33,6 +38,9 @@ public class EllipseDrawerStylized implements EllipseDrawer {
             this.mask = mask;
         }
 
+        // Filling Algorithm is null when no fill is required
+        this.fillingAlgorithm = fillAlgo;
+
         points = new ArrayList<>();
         this.mask.scaleMask(this.stroke.getSize());
     }
@@ -41,11 +49,26 @@ public class EllipseDrawerStylized implements EllipseDrawer {
     public void drawEllipse(Ellipse ellipse, Canvas canvas, Color c) throws ArithmeticException {
         computeEllipse(ellipse);
 
+        if (fillingAlgorithm != null) {
+            // drawSymmetric points
+            for (int[] point : points) {
+                drawSymmetricPointsWithoutStyle(
+                        point[0],
+                        point[1],
+                        point[2],
+                        point[3],
+                        canvas, fillingAlgorithm.getColorFill());
+            }
+
+            // Fill from center pixel
+            fillingAlgorithm.fill((int) ellipse.getXC(), (int) ellipse.getYC(),
+                    fillingAlgorithm.getColorFill(), canvas);
+        }
+
         // Adjust mask if needed
         if (mask.length() % points.size() != 0) {
             mask.fixToIterations(points.size());
         }
-        System.out.println("Mask: " + mask.getMaskString());
 
         // drawSymmetric points
         for (int i = 0; i < points.size(); ++i) {
@@ -56,6 +79,7 @@ public class EllipseDrawerStylized implements EllipseDrawer {
                     point[2],
                     point[3],
                     canvas, c, i);
+
         }
     }
 
@@ -87,11 +111,6 @@ public class EllipseDrawerStylized implements EllipseDrawer {
             points.add(new int[] {xc, yc, xk+1, yk});
         }
 
-        for (int[] point : points) {
-            System.out.println(Arrays.toString(point));
-        }
-        System.out.println("Change here");
-
         // Now swap x-axis with y-axis
         ArrayList<int[]> temp = new ArrayList<>();
         temp.add(new int[] {xc, yc, rx, 0});
@@ -111,28 +130,23 @@ public class EllipseDrawerStylized implements EllipseDrawer {
         }
 
         Collections.reverse(temp);
-        System.out.println("Temp after reverse");
-        for (int[] point : temp) {
-            System.out.println(Arrays.toString(point));
-        }
         points.addAll(temp);
-        System.out.println("Points at the end");
-        for (int[] point : points) {
-            System.out.println(Arrays.toString(point));
-        }
 
         // Remove duplicates
         Set<int[]> set = new LinkedHashSet<>(points);
         points.clear();
         points.addAll(set);
-        System.out.println("Points on hash");
-        for (int[] point : points) {
-            System.out.println(Arrays.toString(point));
-        }
+    }
+
+    private void drawSymmetricPointsWithoutStyle(int xc, int yc, int x, int y, Canvas canvas, Color c) {
+        canvas.putPixel(xc + x, yc + y, c);
+        canvas.putPixel(xc - x, yc - y, c);
+        canvas.putPixel(xc - x, yc + y, c);
+        canvas.putPixel(xc + x, yc - y, c);
+
     }
 
     private void drawSymmetricPoints(int xc, int yc, int x, int y, Canvas canvas, Color c, int i) {
-        System.out.println("Checking index " + i + " at mask: " + mask.getMaskString().charAt(i));
         if (mask.validate(i)) {
             drawPointWithStroke(xc + x, yc + y, canvas, c);
             drawPointWithStroke(xc - x, yc - y, canvas, c);

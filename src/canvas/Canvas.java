@@ -21,6 +21,15 @@ public class Canvas extends JComponent {
         }
     }
 
+    public Color readPixel(int x, int y) {
+        // Only read valid pixels
+        if (x >= 0 && x < buffer.getWidth() && y >= 0 && y < buffer.getHeight()) {
+            return new Color(buffer.getRGB(x, y));
+        } else {
+            return null;
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
