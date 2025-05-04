@@ -1,8 +1,11 @@
+package demos;
+
 import canvas.Canvas;
 import drawing.circle.CircleDrawerManager;
 import drawing.circle.CircleDrawerMidpoint;
 import drawing.ellipse.EllipseDrawerManager;
 import drawing.ellipse.EllipseDrawerMidpoint;
+import drawing.ellipse.EllipseDrawerStylized;
 import drawing.line.LineDrawerManager;
 import drawing.line.LineDrawerMidpoint;
 import drawing.rectangle.RectangleDrawerManager;
@@ -10,9 +13,9 @@ import geometry.*;
 import javax.swing.JFrame;
 import java.awt.Color;
 
-public class DemoApp {
+public class DemoApp12Figures {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("JANIM Demo App");
+        JFrame frame = new JFrame("Demo 12: Figures");
         Canvas canvas = new Canvas(1050, 700);
 
         // Configure frame
@@ -62,7 +65,7 @@ public class DemoApp {
         Ellipse ellipse4 = new Ellipse(800, 500, 110, 30);
 
 
-        EllipseDrawerManager.setDrawer(new EllipseDrawerMidpoint());
+        EllipseDrawerManager.setDrawer(new EllipseDrawerStylized(3, "10"));
         EllipseDrawerManager.draw(ellipse1, canvas, Color.WHITE);
         EllipseDrawerManager.draw(ellipse2, canvas, Color.WHITE);
         EllipseDrawerManager.draw(ellipse3, canvas, Color.WHITE);

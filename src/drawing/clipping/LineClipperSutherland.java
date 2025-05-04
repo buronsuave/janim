@@ -48,7 +48,7 @@ public class LineClipperSutherland extends LineClipperRectangular {
 
     @Override
     public void clip() {
-        List<Line> clippedLines = new ArrayList<>();
+        clippedLines.clear();
 
         for (Line line : lines) {
             int x0 = (int) line.getX0();
@@ -131,7 +131,5 @@ public class LineClipperSutherland extends LineClipperRectangular {
                 if ((getRegion(x0, y0) & getRegion(x1, y1)) != CENTER) break;
             }
         }
-
-        this.lines = clippedLines;
     }
 }

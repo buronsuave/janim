@@ -12,7 +12,7 @@ public class LineClipperExplicit extends LineClipperRectangular {
 
     @Override
     public void clip() {
-        List<Line> newLines = new ArrayList<>();
+        clippedLines.clear();
 
         for (Line line : lines) {
             // Compute new intersections
@@ -43,7 +43,7 @@ public class LineClipperExplicit extends LineClipperRectangular {
                 if (y0 > yMin && y1 < yMin) y1 = yMin; // Crosses bottom border
                 if (y0 < yMin && y1 < yMin) continue; // All line is below region
 
-                newLines.add(new Line(x0, y0, x1, y1));
+                clippedLines.add(new Line(x0, y0, x1, y1));
                 continue;
             }
 
@@ -68,7 +68,7 @@ public class LineClipperExplicit extends LineClipperRectangular {
                 if (x1 > xMin && x0 < xMin) x0 = xMin; // Crosses left border
                 if (x1 < xMin && x0 < xMin) continue; // All line is next to the region
 
-                newLines.add(new Line(x0, y0, x1, y1));
+                clippedLines.add(new Line(x0, y0, x1, y1));
                 continue;
             }
 
@@ -156,10 +156,8 @@ public class LineClipperExplicit extends LineClipperRectangular {
                 }
             }
 
-            newLines.add(new Line(x0, y0, x1, y1));
+            clippedLines.add(new Line(x0, y0, x1, y1));
         }
-
-        this.lines = newLines;
     }
 
     private boolean isInside(int x, int y) {
