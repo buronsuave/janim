@@ -6,9 +6,7 @@ import geometry.Point;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class CircleClipperExplicit extends CircleClipperRectangular {
     public CircleClipperExplicit(List<Circle> circles, int xMin, int yMin, int xMax, int yMax) {
@@ -120,8 +118,17 @@ public class CircleClipperExplicit extends CircleClipperRectangular {
                 i += 1;
             }
 
+            // Workaround here...
+            if ((int) (yc) == yMin && i > 0 && ts.size() == 2) {
+                // Draw first arc and that was it
+                clippedCircles.add(new ArcCircle(xc, yc, r, ts.get(0), ts.get(1)));
+                continue;
+            }
+
+            /*
             System.out.println("Here i = " + i);
             System.out.println("Window here: [" + xMin + "," + xMax + "], [" + yMin + "," + yMax + "]");
+             */
 
             while(i < points.size() - 1) {
                 clippedCircles.add(new ArcCircle(xc, yc, r, ts.get(i), ts.get(i+1)));
@@ -136,13 +143,14 @@ public class CircleClipperExplicit extends CircleClipperRectangular {
             if (isOnRegion((int) (xc+ r), (int) yc)) {
                 clippedCircles.add(new ArcCircle(xc, yc, r, ts.get(points.size()-1), ts.get(0)));
             }
-
+             /*
             System.out.println("Params so far: Circle(" + xc + "," + yc + "," + r + ").");
             System.out.println("Params so far: Points(" + points + ")");
             System.out.println("Params so far: Angles(" + ts + ")");
             System.out.println("Params so far: Arcs = " + clippedCircles.size());
             System.out.println("Params so far: i = " + i);
             System.out.println();
+              */
         }
     }
 

@@ -1,30 +1,25 @@
+package demos;
+
 import canvas.Canvas;
 import drawing.arc.ArcCircleDrawerManager;
-import drawing.arc.ArcCircleDrawerMidpoint;
 import drawing.arc.ArcCircleDrawerStylized;
 import drawing.circle.CircleDrawerManager;
 import drawing.circle.CircleDrawerStylized;
 import drawing.clipping.CircleClipperExplicit;
-import drawing.clipping.LineClipperExplicit;
-import drawing.clipping.LineClipperSutherland;
-import drawing.ellipse.EllipseDrawerManager;
-import drawing.ellipse.EllipseDrawerStylized;
-import drawing.filling.FillerFloodFill;
-import drawing.line.LineDrawerManager;
-import drawing.line.LineDrawerStylized;
 import drawing.rectangle.RectangleDrawerManager;
 import drawing.rectangle.RectangleDrawerStylized;
-import geometry.*;
+import geometry.ArcCircle;
+import geometry.Circle;
+import geometry.Rectangle;
 
 import javax.swing.JFrame;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditorApp {
-
+public class DemoApp20CircleClipper {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("JANIM Editor's App");
+        JFrame frame = new JFrame("Demo 20: Circle clipper");
         Canvas canvas = new Canvas(500, 500);
 
         // Configure frame
@@ -36,7 +31,7 @@ public class EditorApp {
         frame.setResizable(false);
 
         int vx;
-        int vy = 100;
+        int vy = 0;
         int vw = 200;
         int vh = 200;
 
@@ -51,9 +46,14 @@ public class EditorApp {
         circles.add(circle3);
         circles.add(circle4);
 
-        for (; vy + vh < canvas.getHeight(); vy+= 20) {
-            vx = 150;
+        for (; vy + vh < canvas.getHeight(); vy += 20) {
+            vx = 0;
             while (vx + vw < canvas.getWidth()) {
+                for (Circle circle : circles) {
+                    CircleDrawerManager.setDrawer(new CircleDrawerStylized(1, "1"));
+                    CircleDrawerManager.draw(circle, canvas, Color.GRAY);
+                }
+
                 Rectangle rectangle = new Rectangle(vx, vy, vw, vh);
                 RectangleDrawerManager.setRectangleDrawer(new RectangleDrawerStylized(3, "10"));
                 RectangleDrawerManager.draw(rectangle, canvas, Color.RED);
@@ -70,7 +70,7 @@ public class EditorApp {
 
                 try {
                     // Erase
-                    Thread.sleep(10000);
+                    Thread.sleep(30);
                     RectangleDrawerManager.setRectangleDrawer(new RectangleDrawerStylized(3, "1"));
                     RectangleDrawerManager.draw(rectangle, canvas, Color.BLACK);
                     for (ArcCircle arc : clipper.getClippedCircles()) {
